@@ -99,16 +99,17 @@ func (l *Lexer) readListItem() string{
 }
 
 func (l *Lexer) readModifier() token.Token{
-	l.readChar()
 
-	switch l.ch{
+	switch l.input[l.readPosition] {
 	case ' ':
 		return l.readText()
 	case '*':
 		l.readChar()
+		l.readChar()
 		return l.parseBoldText()
 
 	default:
+		l.readChar()
 		return l.parseItalic()
 
 	}
@@ -145,7 +146,10 @@ func (l *Lexer) parseItalic() token.Token{
 
 func (l *Lexer) readText() token.Token{
 	position := l.position
-	for  !l.isEof() && !l.isNewline() && !l.isModifier(){
+	for  !l.isEof() && !l.isNewline() {
+		if l.isModifier() && !l.checkNextEquals(' '){
+			break
+		}
 		l.readChar()
 	}
 
@@ -163,6 +167,10 @@ func (l *Lexer) isNewline() bool {
 
 func (l *Lexer) isEof() bool {
 	return l.ch == 0
+}
+
+func (l *Lexer) checkNextEquals(ch byte) bool{
+	return l.input[l.readPosition] == ch
 }
 
 func newTokenStringLiteral(tokenType token.TokenType, literal string) token.Token{

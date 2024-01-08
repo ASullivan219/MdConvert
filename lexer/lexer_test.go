@@ -87,10 +87,28 @@ func TestPlainText( t *testing.T){
 func TestPlainTextWithModifiers(t *testing.T){
 	input := "This should be a plain * text block\n"
 	tests := []TestToken {
-		{expectedType: token.TEXT, expectedLiteral: "This should be a plain "},
-		{expectedType: token.TEXT, expectedLiteral: "* textblock"},
+		{expectedType: token.TEXT, expectedLiteral: "This should be a plain * text block"},
 		{expectedType: token.NEW_LINE, expectedLiteral: " "},
 	}	
 	l := New(input)
 	runTests(tests, l, t)
 }
+
+func TestBoldList( t *testing.T){
+	input := "- **Bold List**"
+	tests := []TestToken {
+		{expectedType: token.UNORDERED_LIST, expectedLiteral: ""},
+		{expectedType: token.BOLD, expectedLiteral: "Bold List"},
+	}
+	l:= New(input)
+	runTests(tests, l, t)
+}
+
+
+
+
+
+
+
+
+
